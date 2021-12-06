@@ -1,5 +1,6 @@
 package com.kodilla.prs;
 
+import com.kodilla.prs.hand.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -116,12 +117,13 @@ public class PRS {
             }
 
         } else {
-                if (pick.next().equals("n")) {
-                    newGameCommand();
-                } else if (pick.next().equals("x")) {
-                    exitGameCommand();
-                }
+            String letter = pick.next();
+            if (letter.equals("n")) {
+                newGameCommand();
+            } else if (letter.equals("x")) {
+                exitGameCommand();
             }
+        }
         return plaShape;
     }
 }

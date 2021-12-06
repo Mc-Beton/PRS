@@ -1,4 +1,4 @@
-package com.kodilla.prs;
+package com.kodilla.prs.hand;
 
 public class Paper implements Hand {
 

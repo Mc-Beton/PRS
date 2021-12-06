@@ -1,4 +1,4 @@
-package com.kodilla.prs;
+package com.kodilla.prs.hand;
 
 public class Rock implements Hand {
     public HandShape getShape() {
