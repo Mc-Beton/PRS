@@ -1,5 +1,5 @@
 package com.kodilla.prs;
 
 public enum HandShape {
-    PAPER, ROCK, SCISSORS
+    PAPER, ROCK, SCISSORS, EMPTY
 }

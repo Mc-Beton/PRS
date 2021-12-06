@@ -1,5 +1,7 @@
 package com.kodilla.prs;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -14,10 +16,14 @@ public class PRS {
                 "1 - choose Rock \n" +
                 "2 - choose Paper \n" +
                 "3 - choose Scissors");
-        whatToDo();
+        try {
+            whatToDo();
+        } catch ( WrongKeyException e) {
+            System.out.println("Wrong Key, try again");
+        }
     }
 
-    private static void whatToDo() {
+    private static void whatToDo() throws WrongKeyException {
         System.out.println("What would you like to do?");
         String choice = (new Scanner(System.in)).next();
         if (choice.equals("n")) {
@@ -25,18 +31,20 @@ public class PRS {
         } else if (choice.equals("x")) {
             exitGameCommand();
         }
+        else whatToDo();
     }
 
-    private static void exitGameCommand() {
+    private static void exitGameCommand() throws WrongKeyException {
         System.out.println("Are you sure you want to leave the game? y/n");
         String choice = (new Scanner(System.in)).next();
         if (choice.equals("y")) {
+            System.exit(0);
         } else {
             whatToDo();
         }
     }
 
-    private static void newGameCommand() {
+    private static void newGameCommand() throws WrongKeyException {
         System.out.println("Are you sure you want to start a new game? y/n");
         String choice = (new Scanner(System.in)).next();
         if (choice.equals("y")) {
@@ -46,7 +54,7 @@ public class PRS {
         }
     }
 
-    private static void startAGame() {
+    private static void startAGame() throws WrongKeyException {
         System.out.println("Please type in how many wins shall determine the winner of this battle: ");
         Scanner rounds = new Scanner(System.in);
         int r = rounds.nextInt();
@@ -69,6 +77,8 @@ public class PRS {
             } else if (plaShape.getShape().equals(HandShape.PAPER)) {
                 System.out.println(comShape.getShape().equals(HandShape.SCISSORS) ? "Computer Scores!" : "Player Scores!");
                 System.out.println(comShape.getShape().equals(HandShape.SCISSORS) ? comWin++ + " : " + plaWin : comWin + " : " + plaWin++);
+            } else if (plaShape.getShape().equals(HandShape.EMPTY)) {
+                System.out.println("Try again");
             } else {
                 System.out.println(comShape.getShape().equals(HandShape.ROCK) ? "Computer Scores!" : "Player Scores!");
                 System.out.println(comShape.getShape().equals(HandShape.ROCK) ? comWin++ + " : " + plaWin : comWin + " : " + plaWin++);
@@ -80,7 +90,7 @@ public class PRS {
     }
 
     private static Hand getComputerShape() {
-        Hand comShape = null;
+        Hand comShape = new EmptyHand();
         Random random = new Random();
         int input = random.nextInt(3);
         if (input == 0) {
@@ -93,19 +103,25 @@ public class PRS {
         return comShape;
     }
 
-    private static Hand getPlayerShape(Scanner pick) {
-        Hand plaShape = null;
-        if (pick.nextInt() == 1) {
-            plaShape = new Rock();
-        } else if (pick.nextInt() == 2) {
-            plaShape = new Paper();
-        } else if (pick.nextInt() == 3) {
-            plaShape = new Scissors();
-        } else if (pick.next().equals("n")) {
-            newGameCommand();
-        } else if (pick.next().equals("x")) {
-            exitGameCommand();
-        }
+    private static Hand getPlayerShape(@NotNull Scanner pick) throws WrongKeyException {
+        Hand plaShape = new EmptyHand();
+        if (pick.hasNextInt()) {
+            int number = pick.nextInt();
+            if (number == 1) {
+                plaShape = new Rock();
+            } else if (number == 2) {
+                plaShape = new Paper();
+            } else if (number == 3) {
+                plaShape = new Scissors();
+            }
+
+        } else {
+                if (pick.next().equals("n")) {
+                    newGameCommand();
+                } else if (pick.next().equals("x")) {
+                    exitGameCommand();
+                }
+            }
         return plaShape;
     }
 }
