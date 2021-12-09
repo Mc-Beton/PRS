@@ -76,27 +76,22 @@ public class PRS {
             int comWin = 0;
             int plaWin = 0;
 
-            while (comWin != r || plaWin != r) {
-                System.out.println("Choose your shape");
+            while (comWin < r && plaWin < r) {
+                System.out.println("Choose your shape" + comWin + plaWin + r);
                 Scanner pick = new Scanner(System.in);
                 Hand plaShape = getPlayerShape(pick);
                 Hand comShape = getComputerShape();
                 System.out.println(plaShape + "  :  " + comShape);
-                if (plaShape.getShape().equals(comShape.getShape())) {
-                    System.out.println("It's a tie!");
-                    System.out.println(comWin + "  :  " + plaWin);
-                } else if (plaShape.getShape().equals(HandShape.ROCK)) {
-                    System.out.println(comShape.getShape().equals(HandShape.PAPER) ? "Computer Scores!" : "Player Scores!");
-                    System.out.println(comShape.getShape().equals(HandShape.PAPER) ? comWin++ + " : " + plaWin : comWin + " : " + plaWin++);
-                } else if (plaShape.getShape().equals(HandShape.PAPER)) {
-                    System.out.println(comShape.getShape().equals(HandShape.SCISSORS) ? "Computer Scores!" : "Player Scores!");
-                    System.out.println(comShape.getShape().equals(HandShape.SCISSORS) ? comWin++ + " : " + plaWin : comWin + " : " + plaWin++);
-                } else if (plaShape.getShape().equals(HandShape.EMPTY)) {
-                    System.out.println("Try again");
-                } else {
-                    System.out.println(comShape.getShape().equals(HandShape.ROCK) ? "Computer Scores!" : "Player Scores!");
-                    System.out.println(comShape.getShape().equals(HandShape.ROCK) ? comWin++ + " : " + plaWin : comWin + " : " + plaWin++);
+                Winner winner = getWinner(plaShape, comShape);
+                if (winner == Winner.HUMAN)
+                    plaWin++;
+                else if (winner == Winner.COMPUTER)
+                    comWin++;
+                else {
+                    plaWin++;
+                    comWin++;
                 }
+                displayPartialResult(winner, plaWin, comWin);
                 System.out.println(" ");
             }
             System.out.println(plaWin == r ? "Player wins the game!" : "Computer wins the game!");
@@ -104,6 +99,34 @@ public class PRS {
         } else {
             throw new WrongKeyException();
         }
+    }
+
+    private static void displayPartialResult(Winner winner, int plaWin, int comWin) {
+        printOutTheResult(winner);
+        System.out.println("Computer:Player");
+        System.out.println(comWin + "     :     " + plaWin);
+    }
+
+    private static void printOutTheResult(Winner winner) {
+        if (winner != Winner.DRAW) {
+            System.out.println(winner.equals(Winner.HUMAN) ? "Player won this round" : "Computer won this round");
+        } else {
+            System.out.println("It's a draw");
+        }
+    }
+
+    private static Winner getWinner(Hand plaShape, Hand comShape) {
+        Winner win = Winner.DRAW;
+        if (plaShape.getShape().equals(comShape.getShape())) {
+            return win;
+        } else if (plaShape.getShape().equals(HandShape.ROCK)) {
+            win = comShape.getShape().equals(HandShape.PAPER) ? Winner.COMPUTER : Winner.HUMAN;
+        } else if (plaShape.getShape().equals(HandShape.PAPER)) {
+            win = comShape.getShape().equals(HandShape.SCISSORS) ? Winner.COMPUTER : Winner.HUMAN;
+        } else {
+            win = comShape.getShape().equals(HandShape.ROCK) ? Winner.COMPUTER : Winner.HUMAN;
+        }
+        return win;
     }
 
     private static Hand getComputerShape() {
